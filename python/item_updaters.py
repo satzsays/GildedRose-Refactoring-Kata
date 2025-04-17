@@ -56,3 +56,17 @@ class BackstagePassUpdater(ItemUpdater):
 
     def handle_expired(self):
         self.item.quality = 0
+
+
+class ConjuredItemUpdater(ItemUpdater):
+    def update_quality(self):
+        if self.item.quality > 0:
+            self.item.quality -= 2
+            if self.item.quality < 0:
+                self.item.quality = 0
+
+    def handle_expired(self):
+        if self.item.quality > 0:
+            self.item.quality -= 2
+            if self.item.quality < 0:
+                self.item.quality = 0

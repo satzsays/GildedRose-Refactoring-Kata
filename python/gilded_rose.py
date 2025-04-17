@@ -2,6 +2,7 @@
 from item_updaters import (
     AgedBrieUpdater,
     BackstagePassUpdater,
+    ConjuredItemUpdater,
     NormalItemUpdater,
     SulfurasUpdater
 )
@@ -23,6 +24,8 @@ class GildedRose(object):
             return SulfurasUpdater(item)
         elif item.name == "Backstage passes to a TAFKAL80ETC concert":
             return BackstagePassUpdater(item)
+        elif item.name.startswith("Conjured"):
+            return ConjuredItemUpdater(item)
         else:
             return NormalItemUpdater(item)
 
