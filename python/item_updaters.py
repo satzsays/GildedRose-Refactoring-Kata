@@ -9,6 +9,7 @@ class ItemUpdater:
         self.update_sell_in()
         if self.item.sell_in < 0:
             self.handle_expired()
+        self.bound_quality()
 
     def update_quality(self):
         pass
@@ -19,25 +20,30 @@ class ItemUpdater:
     def handle_expired(self):
         pass
 
+    def increase_quality(self, amount=1):
+        self.item.quality += amount
+
+    def decrease_quality(self, amount=1):
+        self.item.quality -= amount
+
+    def bound_quality(self):
+        self.item.quality = max(0, min(50, self.item.quality))
+
 
 class NormalItemUpdater(ItemUpdater):
     def update_quality(self):
-        if self.item.quality > 0:
-            self.item.quality -= 1
+        self.decrease_quality()
 
     def handle_expired(self):
-        if self.item.quality > 0:
-            self.item.quality -= 1
+        self.decrease_quality()
 
 
 class AgedBrieUpdater(ItemUpdater):
     def update_quality(self):
-        if self.item.quality < 50:
-            self.item.quality += 1
+        self.increase_quality()
 
     def handle_expired(self):
-        if self.item.quality < 50:
-            self.item.quality += 1
+        self.increase_quality()
 
 
 class SulfurasUpdater(ItemUpdater):
@@ -47,12 +53,11 @@ class SulfurasUpdater(ItemUpdater):
 
 class BackstagePassUpdater(ItemUpdater):
     def update_quality(self):
-        if self.item.quality < 50:
-            self.item.quality += 1
-            if self.item.sell_in < 11 and self.item.quality < 50:
-                self.item.quality += 1
-            if self.item.sell_in < 6 and self.item.quality < 50:
-                self.item.quality += 1
+        self.increase_quality()
+        if self.item.sell_in < 11:
+            self.increase_quality()
+        if self.item.sell_in < 6:
+            self.increase_quality()
 
     def handle_expired(self):
         self.item.quality = 0
@@ -60,13 +65,7 @@ class BackstagePassUpdater(ItemUpdater):
 
 class ConjuredItemUpdater(ItemUpdater):
     def update_quality(self):
-        if self.item.quality > 0:
-            self.item.quality -= 2
-            if self.item.quality < 0:
-                self.item.quality = 0
+        self.decrease_quality(2)
 
     def handle_expired(self):
-        if self.item.quality > 0:
-            self.item.quality -= 2
-            if self.item.quality < 0:
-                self.item.quality = 0
+        self.decrease_quality(2)
